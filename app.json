@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AutoExpense_agent",
-    "slug": "AutoExpense_agent",
+    "name": "DeciMate app",
+    "slug": "decision-maker-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,6 +11,15 @@
     "ios": {
       "supportsTablet": true
     },
+
+     "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      //matches the app's theme
+      "backgroundColor": "#1a0033" 
+    },
+    
+
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",

@@ -1,54 +1,139 @@
-import { Dimensions, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
-const { width } = Dimensions.get("window");
-
-export const style = StyleSheet.create({
-  container: {
-    flex: 1, // Takes up full screen height
-    alignItems: "center", // Center items horizontally
-    justifyContent: "center", // Center items vertically
-    backgroundColor: "#1353d3", // Removed extra 'ff'
+// NOTE: We are using "styles" (plural) here to match the import in index.jsx
+export const styles = StyleSheet.create({
+  // --- Layout ---
+  safeArea: {
+    flex: 1,
   },
-  headercontainer: {
+  scrollContainer: {
+    padding: 24,
+    paddingBottom: 50,
+  },
+  
+  // --- Header ---
+  header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 40, // Separates header from the rest
+    marginBottom: 40,
+    marginTop: 10,
   },
-  image: {
-    width: 60, 
-    height: 60, 
-    borderRadius: 30, 
-    marginRight: 15,
+  appName: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#fff",
+    letterSpacing: 1,
   },
-  text: {
+  subGreeting: {
+    fontSize: 16,
+    color: "#a78bfa", // Light Purple
+    marginTop: 4,
+    fontWeight: "500",
+  },
+  profileButton: {
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+
+  // --- Main Card (Glassmorphism) ---
+  cardContainer: {
+    marginBottom: 40,
+    shadowColor: "#8b5cf6",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  glassCard: {
+    padding: 30,
+    borderRadius: 30,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+    minHeight: 250,
+    justifyContent: 'center',
+  },
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  cardLabel: {
+    fontSize: 12,
+    color: "#9ca3af",
+    fontWeight: "700",
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  decisionText: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#fff",
+    textAlign: "center",
+    lineHeight: 40,
   },
-  // Style for the main description text
-  subText: {
-    fontSize: 18, 
-    color: "#e0e0e0", 
-    marginBottom: 50,
-    textAlign: 'center',
-    paddingHorizontal: 20
+
+  // --- Action Button ---
+  actionButton: {
+    marginBottom: 40,
+    shadowColor: "#8b5cf6",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  // Button Styles
-  mybutton: {
-    backgroundColor: "#4CAF50",
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    elevation: 5, // Android Shadow
-    shadowColor: "#000", // iOS Shadow
-    shadowOffset: { width: 0, height: 2 }, // iOS Shadow
-    shadowOpacity: 0.25, // iOS Shadow
-    shadowRadius: 3.84, // iOS Shadow
+  gradientButton: {
+    flexDirection: "row",
+    paddingVertical: 18,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10, 
   },
-  buttonText: {
-    color: "white",
+  btnText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+
+  // --- History Section ---
+  historySection: {
+    marginTop: 10,
+  },
+  sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    textAlign: "center",
+    color: "#e5e7eb",
+    marginBottom: 15,
+  },
+  historyItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: "rgba(255,255,255,0.2)",
+  },
+  historyText: {
+    color: "#fff",
+    fontSize: 16,
+    marginLeft: 15,
+    flex: 1,
+  },
+  timeText: {
+    color: "#6b7280",
+    fontSize: 12,
   },
 });
