@@ -2,12 +2,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withSpring,
-    withTiming
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming
 } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
@@ -58,9 +58,9 @@ const AnimatedSplashScreen = ({ onAnimationFinish }) => {
     >
       <View style={styles.contentContainer}>
         <Animated.View style={[styles.iconContainer, animatedIconStyle]}>
-          {/* Ensure this path is correct: assets/images/icon.png */}
+         
 
-<Image source={require('../../assets/images/icon.png')} style={styles.icon} />        </Animated.View>
+<Image source={require('../../assets/images/Logo.png')} style={styles.icon} />        </Animated.View>
 
         <Animated.View style={animatedTextStyle}>
           <Text style={styles.title}>DecIMate</Text>
