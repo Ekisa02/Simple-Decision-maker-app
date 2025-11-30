@@ -206,5 +206,72 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
   },
+
+  // --- New Selection Styles ---
+  roleContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 15,
+    padding: 5,
+    marginBottom: 20,
+  },
+  roleButton: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 12,
+  },
+  roleButtonActive: {
+    backgroundColor: '#8b5cf6', // Active Purple
+  },
+  roleText: {
+    color: '#9ca3af',
+    fontWeight: '600',
+  },
+  roleTextActive: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  
+  // Chips for Activities
+  chipsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 20,
+  },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+  },
+  chipActive: {
+    backgroundColor: '#4c1d95',
+    borderColor: '#8b5cf6',
+  },
+  chipText: {
+    color: '#e5e7eb',
+    fontSize: 14,
+  },
+  chipTextActive: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  // File Upload Box
+  uploadBox: {
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderStyle: 'dashed',
+    borderRadius: 15,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 25,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
 },
 );
