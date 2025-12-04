@@ -2,7 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import ConfettiCannon from 'react-native-confetti-cannon';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Import the separate styles file
@@ -23,22 +24,29 @@ import { settingsStyles as styles } from "../assets/styles/Settings.js";
 
 export default function Settings() {
   const router = useRouter();
+  const confettiRef = useRef(null);
 
   // Settings State
   const [personality, setPersonality] = useState("Balanced");
   const [notifications, setNotifications] = useState(true);
   const [saveHistory, setSaveHistory] = useState(true);
   
+  // Stats State
+  const [totalDecisions, setTotalDecisions] = useState(0);
+  const [timeSaved, setTimeSaved] = useState(0);
+  
   // Custom Instructions State
   const [instructions, setInstructions] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Dynamic Theme State (Based on Personality)
+  // Theme & Easter Egg
   const [themeColors, setThemeColors] = useState(["#111827", "#1a0033"]);
+  const [eggCount, setEggCount] = useState(0);
 
   // Load Settings on Mount
   useEffect(() => {
     loadSettings();
+    calculateStats();
   }, []);
 
   // Update theme when personality changes
@@ -69,6 +77,19 @@ export default function Settings() {
     }
   };
 
+  const calculateStats = async () => {
+    try {
+      const storedHistory = await AsyncStorage.getItem("decision_history");
+      if (storedHistory) {
+        const history = JSON.parse(storedHistory);
+        const count = history.length;
+        setTotalDecisions(count);
+        // Estimate 2 minutes saved per decision
+        setTimeSaved(count * 2);
+      }
+    } catch(e) { console.log(e); }
+  };
+
   const saveSetting = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
@@ -80,7 +101,6 @@ export default function Settings() {
   const changePersonality = (type) => {
     setPersonality(type);
     saveSetting("ai_personality", type);
-    // Visual feedback
     Alert.alert("Mode Changed", `DeciMate is now in ${type} mode.`);
   };
 
@@ -92,36 +112,49 @@ export default function Settings() {
 
   const clearData = async () => {
     Alert.alert(
-      "Clear History",
-      "Are you sure? This will wipe all your previous decisions from the home screen.",
+      "Clear Decision History",
+      "Are you sure you want to clear all your saved decision history? This action cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
         { 
-          text: "Wipe It", 
+          text: "Clear History", 
           style: "destructive", 
           onPress: async () => {
              try {
-                // Remove the specific key used in index.jsx
                 await AsyncStorage.removeItem("decision_history");
-                Alert.alert("Success", "History wiped clean.");
+                setTotalDecisions(0);
+                setTimeSaved(0);
+                Alert.alert("Success", "Decision history has been cleared successfully!");
              } catch(e) {
                 console.log(e);
+                Alert.alert("Error", "Could not clear history.");
              }
           } 
         }
-      ]
+      ],
+      { cancelable: true }
     );
+  };
+
+  // Easter Egg Function
+  const handleEasterEgg = () => {
+    setEggCount(prev => prev + 1);
+    if (eggCount + 1 === 5) {
+      if (confettiRef.current) confettiRef.current.start();
+      Alert.alert("🎉 Developer Mode", "You found the secret! You are now officially a 'DeciMate Pro'. (This does nothing, but you feel cool now).");
+      setEggCount(0);
+    }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
+      <ConfettiCannon count={200} origin={{x: -10, y: 0}} autoStart={false} ref={confettiRef} fadeOut={true} />
       
-      {/* Dynamic Gradient Background based on Personality Mode */}
+      {/* Dynamic Gradient Background */}
       <LinearGradient colors={themeColors} style={{flex:1}}>
         <SafeAreaView style={{ flex: 1 }}>
           
-          {/* HEADER */}
           <View style={styles.header}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -132,24 +165,32 @@ export default function Settings() {
 
           <ScrollView contentContainerStyle={styles.scrollContent}>
             
+            {/* --- NEW: STATS DASHBOARD --- */}
+            <View style={styles.statsGrid}>
+              <View style={styles.statCard}>
+                <MaterialCommunityIcons name="lightning-bolt" size={24} color="#fbbf24" />
+                <Text style={styles.statNumber}>{totalDecisions}</Text>
+                <Text style={styles.statLabel}>Decisions</Text>
+              </View>
+              <View style={styles.statCard}>
+                <MaterialCommunityIcons name="clock-fast" size={24} color="#4ade80" />
+                <Text style={styles.statNumber}>{timeSaved}m</Text>
+                <Text style={styles.statLabel}>Time Saved</Text>
+              </View>
+            </View>
+
             {/* --- SECTION 1: AI BRAIN --- */}
             <Text style={styles.sectionTitle}>AI Personality</Text>
             <View style={styles.sectionContainer}>
               {["Balanced", "Strict", "Zen"].map((type) => (
                 <TouchableOpacity
                   key={type}
-                  style={[
-                    styles.optionRow, 
-                    personality === type && styles.activeOption
-                  ]}
+                  style={[styles.optionRow, personality === type && styles.activeOption]}
                   onPress={() => changePersonality(type)}
                 >
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <MaterialCommunityIcons 
-                      name={
-                        type === "Strict" ? "robot-angry" : 
-                        type === "Zen" ? "meditation" : "scale-balance"
-                      } 
+                      name={type === "Strict" ? "robot-angry" : type === "Zen" ? "meditation" : "scale-balance"} 
                       size={24} 
                       color={personality === type ? "#fff" : "#a78bfa"} 
                     />
@@ -226,7 +267,10 @@ export default function Settings() {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.footerText}>DeciMate v1.2.0 • Powered by Gemini 3-Pro</Text>
+            {/* --- EASTER EGG ON VERSION TAP --- */}
+            <TouchableOpacity activeOpacity={1} onPress={handleEasterEgg}>
+              <Text style={styles.footerText}>DeciMate v1.2.0 • Powered by Gemini</Text>
+            </TouchableOpacity>
 
           </ScrollView>
 
@@ -242,17 +286,14 @@ export default function Settings() {
               style={styles.modalOverlay}
             >
               <View style={styles.modalContent}>
-                
                 <View style={styles.modalIconContainer}>
                    <MaterialCommunityIcons name="brain" size={40} color="#a78bfa" />
                 </View>
-
                 <Text style={styles.modalTitle}>Train Your AI</Text>
                 <Text style={styles.modalSubtitle}>
                   Add custom rules for the AI to follow. {"\n"}
                   (e.g., &quot;I usually have low energy in the afternoons&quot; or &quot;Prioritize coding over gaming.&quot;)
                 </Text>
-
                 <TextInput 
                    style={styles.textArea}
                    multiline
@@ -261,7 +302,6 @@ export default function Settings() {
                    value={instructions}
                    onChangeText={setInstructions}
                 />
-
                 <View style={styles.modalButtons}>
                    <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
                       <Text style={[styles.btnText, {color: '#ef4444'}]}>Cancel</Text>

@@ -1,6 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native";
-
-const { width } = Dimensions.get("window");
+import { StyleSheet } from "react-native";
 
 export const settingsStyles = StyleSheet.create({
   container: { 
@@ -30,6 +28,36 @@ export const settingsStyles = StyleSheet.create({
   scrollContent: { 
     padding: 20,
     paddingBottom: 50
+  },
+
+  // --- NEW: STATS CARD STYLES ---
+  statsGrid: {
+    flexDirection: 'row',
+    gap: 15,
+    marginBottom: 20,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 16,
+    padding: 15,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#fff',
+    marginTop: 5,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#9ca3af',
+    marginTop: 2,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   
   // --- SECTIONS ---
