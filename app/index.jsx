@@ -1,27 +1,33 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import * as DocumentPicker from "expo-document-picker"; // Import Document Picker
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as DocumentPicker from "expo-document-picker";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Modal,
   ScrollView,
   StatusBar,
   Text,
+  TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { getBestDecision } from "../app/services/gemini.js";
 import { styles } from "../assets/styles/index.js";
 
-// --- DATA LISTS ---
-const STUDENT_ACTIVITIES = ["Study Math", "Revise Notes", "Group Project", "Gym", "Power Nap", "Video Games", "Clean Room", "Laundry"];
-const PRO_ACTIVITIES = ["Client Meeting", "Deep Work", "Check Emails", "Networking", "Gym", "Grocery Run", "Review Finances", "Sleep"];
+const STUDENT_ACTIVITIES = ["Study/Learn", "Revise Notes", "Group Project", "Gym", "Power Nap", "Video Games", "Clean Room", "Laundry","Social Media","Coding","Home Work","Music","Game","Visit A friend"];
+const PRO_ACTIVITIES = ["Client Meeting", "Deep Work", "Check Emails", "Networking", "Gym", "Music","Gaming","Drive","Clubbing","Grocery Run", "Review Finances", "Sleep","Find a kid"];
 
 export default function Index() {
+  const router = useRouter();
+  const currentYear = new Date().getFullYear();
+
   const [currentPlan, setCurrentPlan] = useState({ 
     decision: "Tap to Decide", 
     reason: "Let AI organize your day", 
@@ -30,15 +36,65 @@ export default function Index() {
   });
   
   const [history, setHistory] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Modals
+  const [modalVisible, setModalVisible] = useState(false);
+  const [welcomeVisible, setWelcomeVisible] = useState(false);
+  const [detailModalVisible, setDetailModalVisible] = useState(false);
+  
+  const [nickname, setNickname] = useState("");
+  const [tempNickname, setTempNickname] = useState("");
+  const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
 
-  // --- NEW STATES FOR SELECTION ---
-  const [userRole, setUserRole] = useState("Student"); // "Student" or "Professional"
+  const [userRole, setUserRole] = useState("Student");
   const [selectedActivities, setSelectedActivities] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  // Toggle Activity Selection
+  // --- REFRESH LOGIC ---
+  // This ensures history is reloaded every time you visit the home screen
+  useFocusEffect(
+    useCallback(() => {
+      loadHistory();
+    }, [])
+  );
+
+  useEffect(() => {
+    checkFirstLaunch();
+  }, []);
+
+  const checkFirstLaunch = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem("user_nickname");
+      if (storedName) {
+        setNickname(storedName);
+        setWelcomeVisible(false);
+      } else {
+        setWelcomeVisible(true);
+      }
+    } catch (e) { console.log(e); }
+  };
+
+  const loadHistory = async () => {
+    try {
+      const storedHistory = await AsyncStorage.getItem("decision_history");
+      if (storedHistory) {
+        setHistory(JSON.parse(storedHistory));
+      } else {
+        setHistory([]);
+      }
+    } catch (e) { console.log(e); }
+  };
+
+  const saveNickname = async () => {
+    if (!tempNickname.trim()) return Alert.alert("Hey!", "I need a name to call you.");
+    try {
+      await AsyncStorage.setItem("user_nickname", tempNickname);
+      setNickname(tempNickname);
+      setWelcomeVisible(false);
+    } catch (e) { console.log(e); }
+  };
+
   const toggleActivity = (activity) => {
     if (selectedActivities.includes(activity)) {
       setSelectedActivities(prev => prev.filter(item => item !== activity));
@@ -47,20 +103,16 @@ export default function Index() {
     }
   };
 
-  // Handle File Upload
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ["application/pdf", "image/*", "text/*"], // Allow PDFs, Images, Text
+        type: ["application/pdf", "image/*", "text/*"],
       });
-
       if (!result.canceled) {
         setUploadedFile(result.assets[0]);
         Alert.alert("Uploaded", `File selected: ${result.assets[0].name}`);
       }
-    } catch (err) {
-      console.log("Unknown Error: ", err);
-    }
+    } catch (err) { console.log("Unknown Error: ", err); }
   };
 
   const handleSmartDecide = async () => {
@@ -71,7 +123,6 @@ export default function Index() {
 
     setLoading(true);
     
-    // Pass the complex data to our service
     const fileName = uploadedFile ? uploadedFile.name : null;
     const timeFrame = new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening";
 
@@ -85,11 +136,16 @@ export default function Index() {
         decision: result.decision,
         reason: result.reason,
         icon: result.icon || "star-outline",
-        color: "#4ade80"
+        color: "#4ade80",
+        timestamp: new Date().toLocaleString()
       };
+      
       setCurrentPlan(newDecision);
-      setHistory((prev) => [newDecision, ...prev].slice(0, 3));
-      // Reset selections
+      
+      const updatedHistory = [newDecision, ...history];
+      setHistory(updatedHistory);
+      await AsyncStorage.setItem("decision_history", JSON.stringify(updatedHistory));
+
       setSelectedActivities([]);
       setUploadedFile(null);
     } else {
@@ -97,7 +153,11 @@ export default function Index() {
     }
   };
 
-  // Determine which list to show
+  const openHistoryDetail = (item) => {
+    setSelectedHistoryItem(item);
+    setDetailModalVisible(true);
+  };
+
   const currentList = userRole === "Student" ? STUDENT_ACTIVITIES : PRO_ACTIVITIES;
 
   return (
@@ -107,18 +167,18 @@ export default function Index() {
         <SafeAreaView style={styles.safeArea}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             
-            {/* --- HEADER --- */}
             <View style={styles.header}>
               <View>
                 <Text style={styles.appName}>DeciMate AI</Text>
-                <Text style={styles.subGreeting}>Smart choices, powered by Gemini</Text>
+                <Text style={styles.subGreeting}>
+                  {nickname ? `Hi, ${nickname}!` : "Welcome"} • Smart choices
+                </Text>
               </View>
-              <TouchableOpacity style={styles.profileButton}>
+              <TouchableOpacity style={styles.profileButton} onPress={() => router.push("/Settings")}>
                 <Ionicons name="settings-sharp" size={20} color="#fff" />
               </TouchableOpacity>
             </View>
 
-            {/* --- MAIN CARD --- */}
             <View style={styles.cardContainer}>
               <LinearGradient colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]} style={styles.glassCard}>
                 {loading ? (
@@ -138,7 +198,6 @@ export default function Index() {
               </LinearGradient>
             </View>
 
-            {/* --- ACTION BUTTON --- */}
             <TouchableOpacity style={styles.actionButton} onPress={() => setModalVisible(true)} activeOpacity={0.8}>
               <LinearGradient colors={["#8b5cf6", "#6d28d9"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.gradientButton}>
                 <MaterialCommunityIcons name="robot" size={24} color="white" />
@@ -146,31 +205,76 @@ export default function Index() {
               </LinearGradient>
             </TouchableOpacity>
 
-            {/* --- HISTORY --- */}
             {history.length > 0 && (
               <View style={styles.historySection}>
                 <Text style={styles.sectionTitle}>Previous AI Choices</Text>
                 {history.map((item, index) => (
-                  <View key={index} style={styles.historyItem}>
+                  <TouchableOpacity 
+                    key={index} 
+                    style={styles.historyItem}
+                    onPress={() => openHistoryDetail(item)}
+                  >
                     <Ionicons name={item.icon} size={20} color={item.color} />
                     <View style={{flex: 1, marginLeft: 15}}>
-                      <Text style={styles.historyText}>{item.decision}</Text>
-                      <Text style={{color: "#aaa", fontSize: 12}}>{item.reason}</Text>
+                      <Text style={styles.historyText} numberOfLines={1}>{item.decision}</Text>
+                      <Text style={{color: "#aaa", fontSize: 12}} numberOfLines={1}>{item.reason}</Text>
                     </View>
-                  </View>
+                    <Ionicons name="chevron-forward" size={16} color="#666" />
+                  </TouchableOpacity>
                 ))}
               </View>
             )}
+            
+            <View style={{ marginTop: 40, alignItems: 'center', opacity: 0.6 }}>
+              <Text style={{ color: '#aaa', fontSize: 12 }}>
+                &copy; {currentYear} <Text style={{color: '#a78bfa'}} onPress={() => Linking.openURL('http://etech.ac.ke')}>E-Tech Company</Text>.
+              </Text>
+              <Text style={{ color: '#aaa', fontSize: 12 }}>All rights reserved.</Text>
+            </View>
+
           </ScrollView>
         </SafeAreaView>
 
-        {/* --- MULTI-CHOICE MODAL --- */}
+        {/* Welcome Modal */}
+        <Modal animationType="fade" transparent={true} visible={welcomeVisible}>
+           <View style={{flex:1, backgroundColor:"rgba(0,0,0,0.9)", justifyContent:'center', alignItems:'center', padding: 20}}>
+              <View style={[styles.glassCard, {width: '100%', borderColor: '#8b5cf6', borderWidth: 1}]}>
+                  <View style={{marginBottom: 20, backgroundColor: 'rgba(139, 92, 246, 0.2)', padding: 20, borderRadius: 50}}>
+                    <MaterialCommunityIcons name="robot-excited" size={60} color="#a78bfa" />
+                  </View>
+                  <Text style={{fontSize: 28, fontWeight:'bold', color:'white', marginBottom: 10, textAlign:'center'}}>
+                    Beep Boop! 🤖
+                  </Text>
+                  <Text style={{color:'#ccc', textAlign:'center', fontSize: 16, marginBottom: 20, lineHeight: 24}}>
+                    I am <Text style={{color:'#a78bfa', fontWeight:'bold'}}>DeciMate AI</Text>.{"\n"}
+                    I exist to make decisions so you can keep your brain smooth and wrinkle-free.
+                  </Text>
+                  <Text style={{color:'white', fontWeight:'bold', marginBottom: 10}}>What should I call you, human?</Text>
+                  
+                  <TextInput 
+                    style={[styles.textInput, {width: '100%', textAlign:'center', fontSize: 18}]}
+                    placeholder="Enter nickname..."
+                    placeholderTextColor="#666"
+                    value={tempNickname}
+                    onChangeText={setTempNickname}
+                  />
+
+                  <TouchableOpacity 
+                    style={[styles.gradientButton, {marginTop: 20, width: '100%', backgroundColor: '#8b5cf6'}]}
+                    onPress={saveNickname}
+                  >
+                    <Text style={{color:'white', fontWeight:'bold', fontSize: 18}}>Let&apos;s Get Started</Text>
+                  </TouchableOpacity>
+              </View>
+           </View>
+        </Modal>
+
+        {/* Input Modal */}
         <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Help me Decide</Text>
 
-              {/* 1. ROLE SELECTOR */}
               <View style={styles.roleContainer}>
                 <TouchableOpacity onPress={() => setUserRole("Student")} style={[styles.roleButton, userRole === "Student" && styles.roleButtonActive]}>
                   <Text style={[styles.roleText, userRole === "Student" && styles.roleTextActive]}>Student</Text>
@@ -180,8 +284,7 @@ export default function Index() {
                 </TouchableOpacity>
               </View>
 
-              {/* 2. CHIP SELECTION */}
-              <Text style={styles.inputLabel}> What`s on your mind? (Select multiple)</Text>
+              <Text style={styles.inputLabel}>What&apos;s on your mind? (Select multiple)</Text>
               <View style={styles.chipsContainer}>
                 {currentList.map((activity, index) => {
                   const isActive = selectedActivities.includes(activity);
@@ -197,7 +300,6 @@ export default function Index() {
                 })}
               </View>
 
-              {/* 3. FILE UPLOAD */}
               <TouchableOpacity style={styles.uploadBox} onPress={pickDocument}>
                 <Ionicons name={uploadedFile ? "document-text" : "cloud-upload-outline"} size={30} color={uploadedFile ? "#4ade80" : "#a78bfa"} />
                 <Text style={{color: "#ccc", marginTop: 5}}>
@@ -205,7 +307,6 @@ export default function Index() {
                 </Text>
               </TouchableOpacity>
 
-              {/* 4. BUTTONS */}
               <View style={styles.modalButtons}>
                 <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
                   <Text style={{color: "#ef4444", fontWeight: "bold"}}>Cancel</Text>
@@ -218,6 +319,40 @@ export default function Index() {
             </View>
           </View>
         </Modal>
+
+        {/* Detail Modal */}
+        <Modal animationType="fade" transparent={true} visible={detailModalVisible} onRequestClose={() => setDetailModalVisible(false)}>
+            <View style={{flex: 1, backgroundColor: "rgba(0,0,0,0.8)", justifyContent: 'center', padding: 20}}>
+                {selectedHistoryItem && (
+                    <LinearGradient colors={["#2e0249", "#1a0033"]} style={[styles.glassCard, {borderWidth: 1, borderColor: selectedHistoryItem.color}]}>
+                        
+                        <View style={{alignItems:'center', marginBottom: 20}}>
+                           <View style={[styles.iconCircle, {backgroundColor: selectedHistoryItem.color + '30', width: 60, height: 60}]}>
+                               <Ionicons name={selectedHistoryItem.icon} size={30} color={selectedHistoryItem.color} />
+                           </View>
+                           <Text style={{color: '#aaa', marginTop: 10, fontSize: 12}}>Decided on: {selectedHistoryItem.timestamp}</Text>
+                        </View>
+
+                        <Text style={{fontSize: 14, color: '#a78bfa', fontWeight:'bold', letterSpacing: 1, textAlign:'center'}}>DECISION</Text>
+                        <Text style={{fontSize: 28, color: 'white', fontWeight:'bold', textAlign:'center', marginVertical: 10}}>{selectedHistoryItem.decision}</Text>
+                        
+                        <View style={{backgroundColor: 'rgba(255,255,255,0.05)', padding: 15, borderRadius: 10, marginTop: 10}}>
+                             <Text style={{color:'#ccc', fontSize: 16, lineHeight: 24, textAlign:'center', fontStyle:'italic'}}>
+                                &quot;{selectedHistoryItem.reason}&quot;
+                             </Text>
+                        </View>
+
+                        <TouchableOpacity 
+                            style={[styles.actionButton, {marginTop: 30, marginBottom: 0, backgroundColor: selectedHistoryItem.color}]}
+                            onPress={() => setDetailModalVisible(false)}
+                        >
+                             <Text style={{color:'white', fontWeight:'bold', textAlign:'center', padding: 15}}>Close</Text>
+                        </TouchableOpacity>
+                    </LinearGradient>
+                )}
+            </View>
+        </Modal>
+
       </LinearGradient>
     </View>
   );

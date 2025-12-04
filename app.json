@@ -5,22 +5,20 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "autoexpenseagent",
+    "scheme": "decimateapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deciMate.app"
     },
-
-     "splash": {
+    "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      //matches the app's theme
-      "backgroundColor": "#1a0033" 
+      "backgroundColor": "#1a0033"
     },
-    
-
     "android": {
+      "package": "com.deciMate.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

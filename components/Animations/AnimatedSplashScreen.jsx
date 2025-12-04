@@ -43,7 +43,7 @@ const AnimatedSplashScreen = ({ onAnimationFinish }) => {
     const timeout = setTimeout(() => {
       // Use runOnJS to safely call the parent function from the animation thread
       if (onAnimationFinish) onAnimationFinish();
-    }, 3000); // Wait 3 seconds total
+    }, 5000); // Wait 5 seconds total
 
     return () => clearTimeout(timeout);
   }, []);
@@ -85,12 +85,14 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: 'center',
+    padding:10,
   },
   iconContainer: {
     marginBottom: 20,
     shadowColor: "#a78bfa", // Purple glow
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
+    borderRadius:"50%",
     shadowRadius: 20,
     elevation: 10,
   },
@@ -98,17 +100,21 @@ const styles = StyleSheet.create({
     width: width * 0.4,
     height: width * 0.4,
     resizeMode: 'contain',
+    borderRadius:"50%",
   },
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'purple',
+    alignSelf:'center',
     letterSpacing: 1,
   },
   subtitle: {
     fontSize: 16,
-    color: '#ddd6fe', // Light purple
+    color: 'yellow',
+    alignSelf:'center',
     marginTop: 5,
+    textDecorationColor:'yellow',
     letterSpacing: 0.5,
   },
 });

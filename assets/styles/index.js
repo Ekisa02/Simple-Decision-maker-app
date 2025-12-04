@@ -1,8 +1,13 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+
+  const {width} = Dimensions.get('window');
 
 // NOTE: We are using "styles" (plural) here to match the import in index.jsx
 export const styles = StyleSheet.create({
   // --- Layout ---
+
+
   safeArea: {
     flex: 1,
   },
@@ -22,7 +27,7 @@ export const styles = StyleSheet.create({
   appName: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#fff",
+    color: "#fbd40fff",
     letterSpacing: 1,
   },
   subGreeting: {
@@ -273,5 +278,29 @@ export const styles = StyleSheet.create({
     marginBottom: 25,
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
+
+  footer:{
+    backgroundColor:'black',
+    position:'relative',
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundBlendMode:'dark',
+    backgroundPosition:'alignSelf',
+    height:'20',
+    color:'white',
+    width: width,
+  },
+  p:{
+    alignSelf:'end',
+    textAlign:'center',
+
+    alignItems:'justifyContent'
+  },
+  
+  links:{
+    color:'yellow',
+    textDecorationLine:'none'
+
+  }
 },
 );
