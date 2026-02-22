@@ -1,6 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// static backup list shipped with the app; we'll also combine this with
+// any entries saved at runtime in AsyncStorage so the fallback can grow.
+import backupData from "./backupData.json";
+
 // Access the variable from the .env file
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
@@ -97,9 +101,44 @@ export const getBestDecision = async (
       .replace(/```/g, "")
       .trim();
 
-    return JSON.parse(text);
+    let parsed = JSON.parse(text);
+    // add role metadata so we can filter later
+    parsed = { ...parsed, role: userRole };
+
+    // store this decision in persistent AsyncStorage backup list for future
+    // offline fallback (won't update the shipped JSON file).
+    try {
+      const existing =
+        JSON.parse(await AsyncStorage.getItem("backup_decisions")) || [];
+      existing.push(parsed);
+      await AsyncStorage.setItem("backup_decisions", JSON.stringify(existing));
+    } catch (e) {
+      console.warn("Could not save backup decision", e);
+    }
+
+    return parsed;
   } catch (error) {
     console.error("AI Error:", error);
+
+    // Fall back to any saved decisions plus static list. Prefer entries
+    // matching the userRole, but if none exist use the full pool.
+    try {
+      let candidates = [...backupData];
+      const stored =
+        JSON.parse(await AsyncStorage.getItem("backup_decisions")) || [];
+      if (Array.isArray(stored)) candidates = candidates.concat(stored);
+      const roleCandidates = candidates.filter(
+        (c) => !c.role || c.role === userRole,
+      );
+      const pool = roleCandidates.length > 0 ? roleCandidates : candidates;
+      if (pool.length > 0) {
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        return pick;
+      }
+    } catch (fallbackErr) {
+      console.warn("Fallback generation failed", fallbackErr);
+    }
+
     return {
       decision: "Connection Error",
       reason: "Please check your internet and try again.",

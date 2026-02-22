@@ -1,0 +1,279 @@
+[
+  {
+    "role": "Student",
+    "decision": "Study/Learn",
+    "reason": "Spend time learning new material.",
+    "icon": "book-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Revise Notes",
+    "reason": "Review your notes to remember key points.",
+    "icon": "clipboard-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Homework",
+    "reason": "Complete your assignments on time.",
+    "icon": "pencil-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Group Project",
+    "reason": "Collaborate with classmates to finish the project.",
+    "icon": "people-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Coding",
+    "reason": "Practice coding to sharpen your skills.",
+    "icon": "code-slash-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Read a Book",
+    "reason": "Enjoy a good book for both pleasure and learning.",
+    "icon": "book-open-outline"
+  },
+
+  {
+    "role": "Student",
+    "decision": "Gym",
+    "reason": "Get some exercise to stay healthy.",
+    "icon": "fitness-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Power Nap",
+    "reason": "A short nap can boost your focus.",
+    "icon": "moon-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Sleep",
+    "reason": "Rest well to recharge for tomorrow.",
+    "icon": "bed-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Meditate",
+    "reason": "Take a moment for peace of mind.",
+    "icon": "meditation-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Walk",
+    "reason": "A walk clears your head and refreshes you.",
+    "icon": "walk-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Eat Healthy",
+    "reason": "Choose nourishing food for energy.",
+    "icon": "fast-food-outline"
+  },
+
+  {
+    "role": "Student",
+    "decision": "Video Games",
+    "reason": "Take a break with some entertainment.",
+    "icon": "game-controller-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Social Media",
+    "reason": "Catch up with friends online.",
+    "icon": "share-social-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Music",
+    "reason": "Listen to music to relax or get pumped.",
+    "icon": "musical-notes-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Visit a Friend",
+    "reason": "Spend time with someone you care about.",
+    "icon": "people-circle-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Watch Movie",
+    "reason": "Enjoy a film for fun.",
+    "icon": "film-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Party",
+    "reason": "Let loose and have fun with others.",
+    "icon": "beer-outline"
+  },
+
+  {
+    "role": "Student",
+    "decision": "Clean Room",
+    "reason": "A tidy space helps your mind focus.",
+    "icon": "brush-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Laundry",
+    "reason": "Get your clothes ready for the week.",
+    "icon": "shirt-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Cook",
+    "reason": "Make something tasty to eat.",
+    "icon": "restaurant-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Grocery Run",
+    "reason": "Stock up on supplies.",
+    "icon": "cart-outline"
+  },
+  {
+    "role": "Student",
+    "decision": "Budgeting",
+    "reason": "Plan your spending wisely.",
+    "icon": "cash-outline"
+  },
+
+  {
+    "role": "Professional",
+    "decision": "Coding",
+    "reason": "Work on your development tasks.",
+    "icon": "code-slash-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Writing",
+    "reason": "Draft that report or blog post.",
+    "icon": "document-text-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Strategy Planning",
+    "reason": "Map out your next big move.",
+    "icon": "bulb-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Research",
+    "reason": "Gather information to support your work.",
+    "icon": "search-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Design Work",
+    "reason": "Create or refine your designs.",
+    "icon": "color-palette-outline"
+  },
+
+  {
+    "role": "Professional",
+    "decision": "Check Emails",
+    "reason": "Stay on top of communications.",
+    "icon": "mail-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Client Meeting",
+    "reason": "Connect with a client to discuss projects.",
+    "icon": "people-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Team Sync",
+    "reason": "Align with your team on priorities.",
+    "icon": "people-circle-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Networking",
+    "reason": "Build your professional connections.",
+    "icon": "add-circle-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Review Finances",
+    "reason": "Check budgets and expenditures.",
+    "icon": "wallet-outline"
+  },
+
+  {
+    "role": "Professional",
+    "decision": "Gym",
+    "reason": "Take care of your body with exercise.",
+    "icon": "fitness-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Yoga",
+    "reason": "Stretch and relax your mind and body.",
+    "icon": "leaf-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Sleep",
+    "reason": "Rest is essential for productivity.",
+    "icon": "bed-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Walk",
+    "reason": "A walk can clear your thoughts.",
+    "icon": "walk-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Hydrate",
+    "reason": "Drink water to stay alert.",
+    "icon": "water-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Disconnect",
+    "reason": "Take time away from screens.",
+    "icon": "power-outline"
+  },
+
+  {
+    "role": "Professional",
+    "decision": "Family Time",
+    "reason": "Spend quality time with loved ones.",
+    "icon": "heart-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Cook Dinner",
+    "reason": "Prepare a meal to unwind.",
+    "icon": "restaurant-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Grocery Run",
+    "reason": "Pick up household necessities.",
+    "icon": "cart-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Clean House",
+    "reason": "Maintain a pleasant living space.",
+    "icon": "brush-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Drive",
+    "reason": "Run errands or commute as needed.",
+    "icon": "car-outline"
+  },
+  {
+    "role": "Professional",
+    "decision": "Find a Kid",
+    "reason": "Look after or locate a child.",
+    "icon": "person-outline"
+  }
+]

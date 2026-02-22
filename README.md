@@ -75,5 +75,18 @@ npm install
 npm start
 ```
 
+---
+
+### Backup decision logic
+
+The AI helper (`getBestDecision` in `app/services/gemini.js`) now maintains a
+fallback list with separate entries for **Student** and **Professional** roles.
+It ships with a static JSON (`app/services/backupData.json`) containing items
+for every category shown in the UI, and also stores each successful response
+(with role metadata) in `AsyncStorage`. If the AI call fails, `getBestDecision`
+will first look for backups that match the current `userRole`, falling back to
+the full pool if none are found. This guarantees relevant, role‑aware results
+in real time, even offline.
+
 Feel free to delete the original Expo project when the migration is
 complete or keep both if you want multi‑platform support.
