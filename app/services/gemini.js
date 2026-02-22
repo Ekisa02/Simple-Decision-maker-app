@@ -4,7 +4,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Access the variable from the .env file
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
-
 // --- DEBUGGING BLOCK ---
 // Remove this after fixing the error
 console.log("--------------------------------------------------");
@@ -12,19 +11,27 @@ console.log("Debug Check:");
 console.log("API Key Exists?", !!API_KEY); // Should say 'true'
 // Safety check to ensure the key loaded
 if (API_KEY) {
-    console.log("API Key starts with:", API_KEY.substring(0, 5) + "...");
+  console.log("API Key starts with:", API_KEY.substring(0, 5) + "...");
 } else {
-    console.log("API Key is MISSING! Check .env file.");
+  console.log("API Key is MISSING! Check .env file.");
 }
 console.log("--------------------------------------------------");
 // -----------------------
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-export const getBestDecision = async (userRole, selectedActivities, fileName, timeFrame, mode = "decision") => {
+export const getBestDecision = async (
+  userRole,
+  selectedActivities,
+  fileName,
+  timeFrame,
+  mode = "decision",
+) => {
   try {
-    const personality = await AsyncStorage.getItem("ai_personality") || "Balanced";
-    const customRules = await AsyncStorage.getItem("custom_instructions") || "None";
-    
+    const personality =
+      (await AsyncStorage.getItem("ai_personality")) || "Balanced";
+    const customRules =
+      (await AsyncStorage.getItem("custom_instructions")) || "None";
+
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
 
     let prompt = "";
@@ -55,12 +62,15 @@ export const getBestDecision = async (userRole, selectedActivities, fileName, ti
         }
         (Use actual relative times based on 'now'. Keep the 'reason' field as a clean string with newlines for the list).
       `;
-    } 
+    }
     // --- MODE 2: STANDARD DECISION (Existing) ---
     else {
       let personalityPrompt = "";
-      if (personality === "Strict") personalityPrompt = "You are a Drill Sergeant. Be direct, force productivity.";
-      else if (personality === "Zen") personalityPrompt = "You are a Zen Master. Prioritize mental health.";
+      if (personality === "Strict")
+        personalityPrompt =
+          "You are a Drill Sergeant. Be direct, force productivity.";
+      else if (personality === "Zen")
+        personalityPrompt = "You are a Zen Master. Prioritize mental health.";
       else personalityPrompt = "You are a Balanced Assistant.";
 
       prompt = `
@@ -81,16 +91,19 @@ export const getBestDecision = async (userRole, selectedActivities, fileName, ti
     }
 
     const result = await model.generateContent(prompt);
-    const text = result.response.text().replace(/```json/g, "").replace(/```/g, "").trim();
-    
-    return JSON.parse(text);
+    const text = result.response
+      .text()
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
+    return JSON.parse(text);
   } catch (error) {
     console.error("AI Error:", error);
     return {
       decision: "Connection Error",
       reason: "Please check your internet and try again.",
-      icon: "alert-circle-outline"
+      icon: "alert-circle-outline",
     };
   }
 };

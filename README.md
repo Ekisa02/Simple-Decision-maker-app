@@ -48,3 +48,32 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+---
+
+## React.js Conversion
+
+A new React web version of this app lives in the `web/` directory. The
+`web` project was initialized with **Create React App** and contains
+`src/` with copies of shared folders (`components`, `assets`, etc.). The
+initial `App.jsx` is a placeholder; you'll need to:
+
+1. Replace React Native imports (`View`, `Text`, `StyleSheet`, etc.) with
+   standard HTML elements or a web UI library.
+2. Swap Expo/`react-native` APIs for web equivalents (e.g. `localStorage`
+   instead of `AsyncStorage`, `fetch` or file-input instead of
+   `DocumentPicker`, remove `Haptics`, etc.).
+3. Update routing/navigation (React Router, Next.js, etc.) instead of
+   `expo-router`.
+4. Adjust stylesheets, assets paths, and any platform‑specific logic.
+
+Run the web app:
+
+```bash
+cd web
+npm install
+npm start
+```
+
+Feel free to delete the original Expo project when the migration is
+complete or keep both if you want multi‑platform support.
